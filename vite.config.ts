@@ -9,6 +9,9 @@ export default defineConfig({
       presets: [reactCompilerPreset()],
     }),
   ],
+  resolve: {
+    tsconfigPaths: true,
+  },
 
   test: {
     globals: true, // describe, it, expect をimportなしで使える
