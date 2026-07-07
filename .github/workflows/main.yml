@@ -1,0 +1,58 @@
+name: ReactApp FirebaseDeploy
+
+# ワークフローの実行条件
+on:
+  push:
+    branches:
+      - main
+  # 手動実行したい場合はコメントアウトを外す
+  # workflow_dispatch:
+
+jobs:
+  deployFirebase:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ソースコード取得
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Node.jsセットアップ
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      # パッケージインストール
+      - name: Install Packages
+        run: npm ci
+
+      # Lint
+      - name: Run ESLint
+        run: npm run lint
+
+      # テスト(CI)
+      - name: Run Tests
+        run: npm run test
+
+      # Build
+      - name: Build
+        # env:
+        #   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+        #   VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: npm run build
+
+      # Firebase認証ファイル生成
+      - name: Create Service Account File
+        run: |
+          echo "${{ secrets.FIREBASE_KEY }}" | base64 -d > service-account.json
+
+      # Firebaseへデプロイ
+      - name: Firebase Deploy
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: service-account.json
+        run: |
+          npm install -g firebase-tools
+          firebase --version
+          firebase deploy --only hosting
