@@ -1,8 +1,18 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
+  plugins: [
+    react(),
+    babel({
+      presets: [reactCompilerPreset()],
+    }),
+  ],
+
+  test: {
+    globals: true, // describe, it, expect をimportなしで使える
+    environment: "jsdom", // ブラウザ環境をシミュレート
+    setupFiles: "./src/test/setup.ts", // テスト前に実行するセットアップファイル
+  },
 });
