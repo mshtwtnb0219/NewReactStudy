@@ -1,22 +1,38 @@
-import { Button, CloseButton, Dialog, FieldLabel, FieldRoot, Input, Portal, Stack } from "@chakra-ui/react"
-
+import {
+    Button,
+    CloseButton,
+    Dialog,
+    FieldLabel,
+    FieldRoot,
+    Input,
+    Portal,
+    Stack,
+} from "@chakra-ui/react";
+import { useState, type ChangeEvent } from "react";
 
 type Props = {
     open: boolean;
     onClose: () => void;
-}
+    onClickInsert: (title: string, time: string) => void;
+};
 
+export const StudyDialog = ({ open, onClose, onClickInsert }: Props) => {
+    const [title, setTitle] = useState("");
+    const [time, setTime] = useState("");
+    const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value);
+    const onChangeTime = (e: ChangeEvent<HTMLInputElement>) => setTime(e.target.value);
 
-export const StudyDialog = ({ open, onClose }: Props) => {
     return (
         // {/* 登録編集画面 */ }
-        < Dialog.Root
+        <Dialog.Root
             open={open}
             onOpenChange={(e) => {
                 if (!e.open) {
                     onClose();
                 }
-            }} motionPreset="slide-in-bottom" >
+            }}
+            motionPreset="slide-in-bottom"
+        >
             <Portal>
                 <Dialog.Backdrop />
                 <Dialog.Positioner>
@@ -28,17 +44,15 @@ export const StudyDialog = ({ open, onClose }: Props) => {
                             <Stack gap={4}>
                                 <FieldRoot>
                                     <FieldLabel>学習内容</FieldLabel>
-                                    {/* <Input value={name} readOnly={!isAdmin} onChange={onChangeName} /> */}
-                                    <Input />
+                                    <Input value={title} onChange={onChangeTitle} />
                                     <FieldLabel>学習時間</FieldLabel>
-                                    <Input />
-                                    {/* <Input value={username} readOnly={!isAdmin} onChange={onChangeUserName} /> */}
+                                    <Input value={time} onChange={onChangeTime} />
                                 </FieldRoot>
                             </Stack>
                         </Dialog.Body>
                         <Dialog.Footer>
                             {/* <Button onClick={onClickUpdate}>登録</PrimaryButton> */}
-                            <Button>登録</Button>
+                            <Button onClick={() => onClickInsert(title, time)}>登録</Button>
                             <Button onClick={onClose}>キャンセル</Button>
                         </Dialog.Footer>
                         <Dialog.CloseTrigger asChild>
@@ -47,7 +61,6 @@ export const StudyDialog = ({ open, onClose }: Props) => {
                     </Dialog.Content>
                 </Dialog.Positioner>
             </Portal>
-        </Dialog.Root >
-
-    )
-}
+        </Dialog.Root>
+    );
+};

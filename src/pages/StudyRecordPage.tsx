@@ -1,25 +1,32 @@
-import { useState } from "react"
-import { Header } from "../components/molecules/Header"
-import { StudyDialog } from "../components/organisms/StudyDialog"
-import { StudyTable } from "../components/organisms/StudyTable"
-import { MainLayOut } from "../templates/MainLayout"
+import { useState } from "react";
+import { Header } from "../components/molecules/Header";
+import { StudyDialog } from "../components/organisms/StudyDialog";
+import { StudyTable } from "../components/organisms/StudyTable";
+import { MainLayOut } from "../templates/MainLayout";
+import { insertRecord } from "../utils/supabaseFunction";
 
 export const StudyRecordPage = () => {
+  // Dialogの起動状態
+  const [open, setOpen] = useState(false);
 
-    // Dialogの起動状態
-    const [open, setOpen] = useState(false);
+  // recordの登録
+  const onClickInsert = async (title: string, time: string) => {
+    await insertRecord(title, time);
+  };
 
-    // データをもつ
-    // 各コンポーネントを配置する
-    return (
-        <>
-            <MainLayOut>
-                <Header onClickOpen={() => setOpen(true)} />
-                <StudyTable />
-                <StudyDialog open={open} onClose={() => setOpen(false)} />
-            </MainLayOut>
-
-
-        </>
-    )
-}
+  // データをもつ
+  // 各コンポーネントを配置する
+  return (
+    <>
+      <MainLayOut>
+        <Header onClickOpen={() => setOpen(true)} />
+        <StudyTable />
+        <StudyDialog
+          open={open}
+          onClose={() => setOpen(false)}
+          onClickInsert={onClickInsert}
+        />
+      </MainLayOut>
+    </>
+  );
+};
