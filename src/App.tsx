@@ -1,10 +1,10 @@
-import { Button } from "@chakra-ui/react";
+import { StudyRecordPage } from "./pages/StudyRecordPage";
+
 
 function App() {
   return (
     <>
-      <p>あぷりけーしょん</p>
-      <Button>ボタン</Button>
+      <StudyRecordPage />
     </>
   );
 }
