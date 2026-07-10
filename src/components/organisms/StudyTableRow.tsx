@@ -3,10 +3,11 @@ import type { StudyRecord } from "../../types/StudyRecord";
 
 type Props = {
   record: StudyRecord;
+  deleteRecord: (id: number) => void;
 };
 
 export const StudyTableRow = (props: Props) => {
-  const { record } = props;
+  const { record, deleteRecord } = props;
   return (
     // {/* React 2時間 編集 削除 */ }
     //     {/* 1行だけ担当する */ }
@@ -17,7 +18,7 @@ export const StudyTableRow = (props: Props) => {
         <Button size="xs" colorPalette="blue">
           編集
         </Button>
-        <Button size="xs" colorPalette="red">
+        <Button size="xs" colorPalette="red" onClick={() => { deleteRecord(record.id) }}>
           削除
         </Button>
       </Table.Cell>

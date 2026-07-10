@@ -5,10 +5,11 @@ import type { StudyRecord } from "../../types/StudyRecord";
 type Props = {
   records: Array<StudyRecord>;
   loading: boolean;
+  deleteRecord: (id: number) => void;
 }
 
 
-export const StudyTable = ({ records, loading }: Props) => {
+export const StudyTable = ({ records, loading, deleteRecord }: Props) => {
   return (
     <>
       {/* 学習内容   学習時間   操作 */}
@@ -31,7 +32,7 @@ export const StudyTable = ({ records, loading }: Props) => {
             </Table.Header>
             <Table.Body>
               {records.map((record) => (
-                <StudyTableRow key={record.id} record={record} />
+                <StudyTableRow key={record.id} record={record} deleteRecord={deleteRecord} />
               ))}
             </Table.Body>
           </Table.Root>

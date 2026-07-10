@@ -3,7 +3,7 @@ import { Header } from "../components/molecules/Header";
 import { StudyDialog } from "../components/organisms/StudyDialog";
 import { StudyTable } from "../components/organisms/StudyTable";
 import { MainLayOut } from "../templates/MainLayout";
-import { getAllRecords, insertRecord } from "../utils/supabaseFunction";
+import { deleteRecord, getAllRecords, insertRecord } from "../utils/supabaseFunction";
 import type { StudyRecord } from "../types/StudyRecord";
 import { useMessage } from "../hocks/useMessage";
 import { Toaster } from "../components/ui/toaster";
@@ -40,6 +40,21 @@ export const StudyRecordPage = () => {
     }
   }
 
+  // データの削除
+  const delRecord = async (id: number) => {
+    try {
+      setLoading(true);
+      await deleteRecord(id);
+      const records = await getAllRecords();
+      setRecords(records.data ?? []);
+      showMessage({ title: `削除しました。`, status: "success" })
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     getRecords();
   }, [])
@@ -51,7 +66,7 @@ export const StudyRecordPage = () => {
       <Toaster />
       <MainLayOut>
         <Header onClickOpen={() => setOpen(true)} />
-        <StudyTable records={records} loading={loading} />
+        <StudyTable records={records} loading={loading} deleteRecord={delRecord} />
         <StudyDialog
           open={open}
           onClose={() => setOpen(false)}

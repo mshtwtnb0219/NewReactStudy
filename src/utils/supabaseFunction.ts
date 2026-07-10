@@ -27,7 +27,6 @@ export const deleteRecord = async (index: number) => {
     .from("study-record")
     .delete()
     .eq("id", index);
-  console.log(error);
   if (error) {
     console.error(error);
   }
