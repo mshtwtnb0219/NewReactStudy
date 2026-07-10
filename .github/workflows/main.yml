@@ -2,11 +2,11 @@ name: ReactApp FirebaseDeploy
 
 # ワークフローの実行条件
 on:
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
   # 手動実行したい場合はコメントアウトを外す
-  workflow_dispatch:
+  # workflow_dispatch:
 
 jobs:
   deployFirebase:

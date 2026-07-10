@@ -7,7 +7,7 @@ export const getAllRecords = async () => {
 };
 
 // データの登録
-export const insertRecord = async (title: string, time: string) => {
+export const insertRecord = async (title: string, time: number) => {
   const { error } = await supabase.from("study-record").insert([
     {
       title,

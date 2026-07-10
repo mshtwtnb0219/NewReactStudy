@@ -1,5 +1,5 @@
 export interface StudyRecord {
   id: number;
   title: string;
-  time: string;
+  time: number;
 }

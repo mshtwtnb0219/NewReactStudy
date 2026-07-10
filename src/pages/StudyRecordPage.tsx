@@ -17,7 +17,7 @@ export const StudyRecordPage = () => {
   const { showMessage } = useMessage();
 
   // recordの登録
-  const onClickInsert = async (title: string, time: string) => {
+  const onClickInsert = async (title: string, time: number) => {
     try {
       await insertRecord(title, time);
       showMessage({ title: 'データ登録完了', status: 'success' });

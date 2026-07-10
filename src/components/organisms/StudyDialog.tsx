@@ -2,31 +2,39 @@ import {
     Button,
     CloseButton,
     Dialog,
+    Field,
     FieldLabel,
     FieldRoot,
     Input,
     Portal,
     Stack,
 } from "@chakra-ui/react";
-import { useState, type ChangeEvent } from "react";
+import { useForm } from "react-hook-form";
 
 type Props = {
     open: boolean;
     onClose: () => void;
-    onClickInsert: (title: string, time: string) => void;
+    onClickInsert: (title: string, time: number) => Promise<void>;
 };
 
-export const StudyDialog = ({ open, onClose, onClickInsert }: Props) => {
-    const [title, setTitle] = useState("");
-    const [time, setTime] = useState("");
-    const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value);
-    const onChangeTime = (e: ChangeEvent<HTMLInputElement>) => setTime(e.target.value);
+type FormValues = {
+    title: string;
+    time: number;
+}
 
-    const handleInsert = () => {
-        onClickInsert(title, time);
+export const StudyDialog = ({ open, onClose, onClickInsert }: Props) => {
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<FormValues>();
+    const handleInsert = (data: FormValues) => {
+        // supabase登録
+        onClickInsert(data.title, data.time);
+
+        reset();
         onClose()
-        setTitle("");
-        setTime("");
+    }
+
+    const handleClose = () => {
+        reset();
+        onClose();
     }
 
     return (
@@ -35,7 +43,7 @@ export const StudyDialog = ({ open, onClose, onClickInsert }: Props) => {
             open={open}
             onOpenChange={(e) => {
                 if (!e.open) {
-                    onClose();
+                    handleClose();
                 }
             }}
             motionPreset="slide-in-bottom"
@@ -49,18 +57,38 @@ export const StudyDialog = ({ open, onClose, onClickInsert }: Props) => {
                         </Dialog.Header>
                         <Dialog.Body mx={4}>
                             <Stack gap={4}>
-                                <FieldRoot>
+                                <FieldRoot invalid={!!errors.title}>
                                     <FieldLabel>学習内容</FieldLabel>
-                                    <Input value={title} onChange={onChangeTitle} />
+                                    {/* <Input value={title} onChange={onChangeTitle} /> */}
+                                    <Input {...register("title", {
+                                        required: "学習内容を入力してください",
+                                    })} />
+                                    <Field.ErrorText>
+                                        {errors.title?.message}
+                                    </Field.ErrorText>
+                                </FieldRoot>
+                                <FieldRoot invalid={!!errors.time}>
                                     <FieldLabel>学習時間</FieldLabel>
-                                    <Input value={time} onChange={onChangeTime} />
+                                    {/* <Input value={time} onChange={onChangeTime} /> */}
+                                    <Input type="number" {...register("time", {
+                                        required: "学習時間を入力してください",
+                                        valueAsNumber: true,
+                                        min: {
+                                            value: 1,
+                                            message: "1時間以上入力してください"
+                                        },
+
+                                    })} />
+                                    <Field.ErrorText>
+                                        {errors.time?.message}
+                                    </Field.ErrorText>
                                 </FieldRoot>
                             </Stack>
                         </Dialog.Body>
                         <Dialog.Footer>
                             {/* <Button onClick={onClickUpdate}>登録</PrimaryButton> */}
-                            <Button onClick={handleInsert}>登録</Button>
-                            <Button onClick={onClose}>キャンセル</Button>
+                            <Button onClick={handleSubmit(handleInsert)}>登録</Button>
+                            <Button onClick={handleClose}>キャンセル</Button>
                         </Dialog.Footer>
                         <Dialog.CloseTrigger asChild>
                             <CloseButton size="sm" />
@@ -68,6 +96,6 @@ export const StudyDialog = ({ open, onClose, onClickInsert }: Props) => {
                     </Dialog.Content>
                 </Dialog.Positioner>
             </Portal>
-        </Dialog.Root>
+        </Dialog.Root >
     );
 };
