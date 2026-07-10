@@ -22,6 +22,13 @@ export const StudyDialog = ({ open, onClose, onClickInsert }: Props) => {
     const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value);
     const onChangeTime = (e: ChangeEvent<HTMLInputElement>) => setTime(e.target.value);
 
+    const handleInsert = () => {
+        onClickInsert(title, time);
+        onClose()
+        setTitle("");
+        setTime("");
+    }
+
     return (
         // {/* 登録編集画面 */ }
         <Dialog.Root
@@ -52,7 +59,7 @@ export const StudyDialog = ({ open, onClose, onClickInsert }: Props) => {
                         </Dialog.Body>
                         <Dialog.Footer>
                             {/* <Button onClick={onClickUpdate}>登録</PrimaryButton> */}
-                            <Button onClick={() => onClickInsert(title, time)}>登録</Button>
+                            <Button onClick={handleInsert}>登録</Button>
                             <Button onClick={onClose}>キャンセル</Button>
                         </Dialog.Footer>
                         <Dialog.CloseTrigger asChild>
