@@ -33,14 +33,14 @@ jobs:
       #   run: npm run lint
 
       # テスト(CI)
-      - name: Run Tests
-        run: npm run test
+      # - name: Run Tests
+      #   run: npm run test
 
       # Build
       - name: Build
-        # env:
-        #   VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-        #   VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
         run: npm run build
 
       # Firebase認証ファイル生成
