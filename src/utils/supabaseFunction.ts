@@ -22,12 +22,24 @@ export const insertRecord = async (title: string, time: number) => {
 };
 
 // データの削除
-export const deleteRecord = async (index: number) => {
+export const deleteRecord = async (id: number) => {
   const { error } = await supabase
     .from("study-record")
     .delete()
-    .eq("id", index);
+    .eq("id", id);
   if (error) {
     console.error(error);
   }
 };
+
+
+// データの削除
+export const updateRecord = async (id: number, title: string, time: number) => {
+  const { error } = await supabase
+    .from("study-record")
+    .update({ title: title, time: time })
+    .eq('id', id)
+  if (error) {
+    console.error(error);
+  }
+}

@@ -10,11 +10,15 @@ import {
     Stack,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
+import type { StudyRecord } from "../../types/StudyRecord";
+import { useEffect } from "react";
 
 type Props = {
     open: boolean;
+    record: StudyRecord | null;
     onClose: () => void;
     onClickInsert: (title: string, time: number) => Promise<void>;
+    onClickUpdate: (id: number, title: string, time: number) => Promise<void>;
 };
 
 type FormValues = {
@@ -22,20 +26,36 @@ type FormValues = {
     time: number;
 }
 
-export const StudyDialog = ({ open, onClose, onClickInsert }: Props) => {
+export const StudyDialog = ({ open, onClose, onClickInsert, record, onClickUpdate }: Props) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm<FormValues>();
-    const handleInsert = (data: FormValues) => {
-        // supabase登録
-        onClickInsert(data.title, data.time);
-
-        reset();
-        onClose()
+    const handleSave = async (data: FormValues) => {
+        if (record) {
+            await onClickUpdate(record.id, data.title, data.time);
+        } else {
+            await onClickInsert(data.title, data.time);
+        }
+        handleClose();
     }
-
     const handleClose = () => {
         reset();
         onClose();
     }
+
+    useEffect(() => {
+        console.log("格納されているかの確認")
+        console.log(record)
+        if (record) {
+            reset({
+                title: record.title,
+                time: record.time,
+            });
+        } else {
+            reset({
+                title: "",
+                time: 0,
+            });
+        }
+    }, [record, reset]);
 
     return (
         // {/* 登録編集画面 */ }
@@ -53,7 +73,7 @@ export const StudyDialog = ({ open, onClose, onClickInsert }: Props) => {
                 <Dialog.Positioner>
                     <Dialog.Content pb={6}>
                         <Dialog.Header>
-                            <Dialog.Title>新規登録</Dialog.Title>
+                            <Dialog.Title>{record ? '編集' : '新規登録'}</Dialog.Title>
                         </Dialog.Header>
                         <Dialog.Body mx={4}>
                             <Stack gap={4}>
@@ -87,7 +107,7 @@ export const StudyDialog = ({ open, onClose, onClickInsert }: Props) => {
                         </Dialog.Body>
                         <Dialog.Footer>
                             {/* <Button onClick={onClickUpdate}>登録</PrimaryButton> */}
-                            <Button onClick={handleSubmit(handleInsert)}>登録</Button>
+                            <Button onClick={handleSubmit(handleSave)}>{record ? '更新' : '登録'}</Button>
                             <Button onClick={handleClose}>キャンセル</Button>
                         </Dialog.Footer>
                         <Dialog.CloseTrigger asChild>

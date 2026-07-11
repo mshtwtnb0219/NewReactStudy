@@ -6,10 +6,11 @@ type Props = {
   records: Array<StudyRecord>;
   loading: boolean;
   deleteRecord: (id: number) => void;
+  onClickEdit: (record: StudyRecord) => void;
 }
 
 
-export const StudyTable = ({ records, loading, deleteRecord }: Props) => {
+export const StudyTable = ({ records, loading, deleteRecord, onClickEdit }: Props) => {
   return (
     <>
       {/* 学習内容   学習時間   操作 */}
@@ -32,7 +33,7 @@ export const StudyTable = ({ records, loading, deleteRecord }: Props) => {
             </Table.Header>
             <Table.Body>
               {records.map((record) => (
-                <StudyTableRow key={record.id} record={record} deleteRecord={deleteRecord} />
+                <StudyTableRow key={record.id} record={record} deleteRecord={deleteRecord} onClickEdit={onClickEdit} />
               ))}
             </Table.Body>
           </Table.Root>
