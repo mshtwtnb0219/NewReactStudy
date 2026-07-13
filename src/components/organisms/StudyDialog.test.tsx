@@ -1,8 +1,7 @@
-import userEvent from "@testing-library/user-event"
 import { renderWithProvider } from "../../test/render"
 import type { StudyRecord } from "../../types/StudyRecord"
 import { StudyDialog } from "./StudyDialog"
-import { screen, waitFor } from "@testing-library/react";
+import { screen, } from "@testing-library/react";
 
 describe('StudyDialog.test.tsxのテスト', () => {
     test('新規登録タイトルが表示される', () => {

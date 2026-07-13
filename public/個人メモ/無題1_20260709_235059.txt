@@ -1,0 +1,175 @@
+
+
+  見出し
+                           新規登録
++-------------------------------------------+
+| 学習内容        学習時間                 |
+| React           2時間    編集  削除      |
+| java            1時間    編集  削除      |
++-------------------------------------------+
+
+
+
+現状、以下のような感じです。
+
+■StudyTable.tsx
+import { Table, } from "@chakra-ui/react"
+import { StudyTableRow } from "./StudyTableRow"
+import type { StudyRecord } from "../../types/StudyRecord"
+
+export const StudyTable = () => {
+
+    return (
+        <>
+            {/* 学習内容   学習時間   操作 */}
+            <Table.Root size="md" striped>
+                <Table.Caption />
+                <Table.Header>
+                    <Table.Row>
+                        <Table.ColumnHeader>学習内容</Table.ColumnHeader>
+                        <Table.ColumnHeader>学習時間</Table.ColumnHeader>
+                        <Table.ColumnHeader>操作</Table.ColumnHeader>
+                    </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                    {records.map((record) => (
+                        <StudyTableRow
+                            record={record}
+                        />
+                    ))}
+
+                </Table.Body>
+            </Table.Root>
+        </>
+    )
+}
+
+// ダミーデータ
+const records: StudyRecord[] = [
+    {
+        id: 1,
+        title: "国語",
+        time: 1,
+    },
+    {
+        id: 2,
+        title: "数学",
+        time: 2,
+    },
+    {
+        id: 3,
+        title: "英語",
+        time: 3,
+    },
+]
+
+
+■StudyTableRow.tsx
+import { Table } from "@chakra-ui/react";
+import type { StudyRecord } from "../../types/StudyRecord";
+
+type Props = {
+    record: StudyRecord
+}
+
+export const StudyTableRow = (props: Props) => {
+    const { record } = props;
+    return (
+
+        <>
+            {/* React 2時間 編集 削除 */}
+            {/* 1行だけ担当する */}
+            <Table.Row key={record.id}>
+                <Table.Cell>{record.title}</Table.Cell>
+                <Table.Cell>{record.time}</Table.Cell>
+                <Table.Cell>編集 削除</Table.Cell>
+            </Table.Row>
+        </>
+    )
+}
+
+
+
+
+
+
+
+
+
+
+StudyDialogが完成しました。
+一旦、StudyRecordPage.tsxでStudyDialog.tsxを呼び出して
+ダイアログが起動するところまで確認完了
+次は新規ボタンを押下したタイミングでダイアログを起動するところから実装していきます。
+Header.tsxから状態変数をpropsで渡すイメージでいい？
+
+■StudyDialog.tsx
+import { Button, CloseButton, Dialog, FieldLabel, FieldRoot, Input, Portal, Stack } from "@chakra-ui/react"
+
+export const StudyDialog = () => {
+    return (
+        // {/* 登録編集画面 */ }
+        < Dialog.Root
+            open={true}
+        // onOpenChange={(e) => setOpen(e.open)} motionPreset="slide-in-bottom" >
+        >
+            <Dialog.Trigger asChild>
+                <Button variant="outline" size="sm">
+                    Open Dialog
+                </Button>
+            </Dialog.Trigger>
+            <Portal>
+                <Dialog.Backdrop />
+                <Dialog.Positioner>
+                    <Dialog.Content pb={6}>
+                        <Dialog.Header>
+                            <Dialog.Title>新規登録</Dialog.Title>
+                        </Dialog.Header>
+                        <Dialog.Body mx={4}>
+                            <Stack gap={4}>
+                                <FieldRoot>
+                                    <FieldLabel>学習内容</FieldLabel>
+                                    {/* <Input value={name} readOnly={!isAdmin} onChange={onChangeName} /> */}
+                                    <Input value="社会" />
+                                    <FieldLabel>学習時間</FieldLabel>
+                                    <Input value="3" />
+                                    {/* <Input value={username} readOnly={!isAdmin} onChange={onChangeUserName} /> */}
+                                </FieldRoot>
+                            </Stack>
+                        </Dialog.Body>
+                        <Dialog.Footer>
+                            {/* <Button onClick={onClickUpdate}>登録</PrimaryButton> */}
+                            <Button>登録</Button>
+                            <Button>キャンセル</Button>
+                        </Dialog.Footer>
+                        <Dialog.CloseTrigger asChild>
+                            <CloseButton size="sm" />
+                        </Dialog.CloseTrigger>
+                    </Dialog.Content>
+                </Dialog.Positioner>
+            </Portal>
+        </Dialog.Root >
+
+    )
+}
+
+ダイアログの起動、入力まで完了しました。
+次は入力したい値をsupabaseに保存するところまで実施したい
+
+supabaseの設定は完了している
+データ登録用の関数も
+src/utils/supabaseFunction.tsで記述しています。
+
+
+
+
+Headerの「新規登録」を押す 〇
+StudyDialogが開く 〇
+入力する 
+useStateで値を管理する
+一覧に追加する（ダミーデータでOK）
+最後にSupabaseへ保存する
+
+この順番なら、一つひとつ動作確認しながら進められます。
+
+

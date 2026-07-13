@@ -1,0 +1,11 @@
+次にやること
+
+あと必要なのは
+
+StudyTableRowの編集ボタン
+selectedRecordへ値をセット
+setOpen(true)
+useEffect(reset)でフォームへ表示
+updateRecord()を呼ぶ
+
+ここまでできれば、このアプリのCRUD（Create・Read・Update・Delete）が一通り完成します。
