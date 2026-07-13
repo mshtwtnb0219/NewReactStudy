@@ -3,8 +3,6 @@ import {
     CloseButton,
     Dialog,
     Field,
-    FieldLabel,
-    FieldRoot,
     Input,
     Portal,
     Stack,
@@ -27,7 +25,13 @@ type FormValues = {
 }
 
 export const StudyDialog = ({ open, onClose, onClickInsert, record, onClickUpdate }: Props) => {
-    const { register, handleSubmit, formState: { errors }, reset } = useForm<FormValues>();
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<FormValues>({
+        mode: "onSubmit",
+        defaultValues: {
+            title: "",
+            time: 0,
+        },
+    });
     const handleSave = async (data: FormValues) => {
         if (record) {
             await onClickUpdate(record.id, data.title, data.time);
@@ -42,6 +46,8 @@ export const StudyDialog = ({ open, onClose, onClickInsert, record, onClickUpdat
     }
 
     useEffect(() => {
+        if (!open) return;
+
         if (record) {
             reset({
                 title: record.title,
@@ -53,8 +59,7 @@ export const StudyDialog = ({ open, onClose, onClickInsert, record, onClickUpdat
                 time: 0,
             });
         }
-    }, [record, reset]);
-
+    }, [open, record, reset]);
     return (
         // {/* 登録編集画面 */ }
         <Dialog.Root
@@ -73,41 +78,50 @@ export const StudyDialog = ({ open, onClose, onClickInsert, record, onClickUpdat
                         <Dialog.Header>
                             <Dialog.Title>{record ? '編集' : '新規登録'}</Dialog.Title>
                         </Dialog.Header>
-                        <Dialog.Body mx={4}>
-                            <Stack gap={4}>
-                                <FieldRoot invalid={!!errors.title}>
-                                    <FieldLabel>学習内容</FieldLabel>
-                                    {/* <Input value={title} onChange={onChangeTitle} /> */}
-                                    <Input {...register("title", {
-                                        required: "学習内容を入力してください",
-                                    })} />
-                                    <Field.ErrorText>
-                                        {errors.title?.message}
-                                    </Field.ErrorText>
-                                </FieldRoot>
-                                <FieldRoot invalid={!!errors.time}>
-                                    <FieldLabel>学習時間</FieldLabel>
-                                    {/* <Input value={time} onChange={onChangeTime} /> */}
-                                    <Input type="number" {...register("time", {
-                                        required: "学習時間を入力してください",
-                                        valueAsNumber: true,
-                                        min: {
-                                            value: 1,
-                                            message: "1時間以上入力してください"
-                                        },
-
-                                    })} />
-                                    <Field.ErrorText>
-                                        {errors.time?.message}
-                                    </Field.ErrorText>
-                                </FieldRoot>
-                            </Stack>
-                        </Dialog.Body>
-                        <Dialog.Footer>
-                            {/* <Button onClick={onClickUpdate}>登録</PrimaryButton> */}
-                            <Button onClick={handleSubmit(handleSave)}>{record ? '更新' : '登録'}</Button>
-                            <Button onClick={handleClose}>キャンセル</Button>
-                        </Dialog.Footer>
+                        <form onSubmit={handleSubmit(handleSave, (errors) => {
+                            console.log("validation error", errors)
+                        })}>
+                            <Dialog.Body mx={4}>
+                                <Stack gap={4}>
+                                    <Field.Root invalid={!!errors.title}>
+                                        <Field.Label>学習内容</Field.Label>
+                                        {/* <Input value={title} onChange={onChangeTitle} /> */}
+                                        <Input {...register("title", {
+                                            required: {
+                                                value: true,
+                                                message: "学習内容を入力してください",
+                                            },
+                                        })} />
+                                        <Field.ErrorText>
+                                            {errors.title?.message}
+                                        </Field.ErrorText>
+                                    </Field.Root>
+                                    <Field.Root invalid={!!errors.time}>
+                                        <Field.Label>学習時間</Field.Label>
+                                        {/* <Input value={time} onChange={onChangeTime} /> */}
+                                        <Input type="number" {...register("time", {
+                                            required: {
+                                                value: true,
+                                                message: "学習時間を入力してください",
+                                            },
+                                            valueAsNumber: true,
+                                            min: {
+                                                value: 1,
+                                                message: "1時間以上入力してください",
+                                            },
+                                        })} />
+                                        <Field.ErrorText>
+                                            {errors.time?.message}
+                                        </Field.ErrorText>
+                                    </Field.Root>
+                                </Stack>
+                            </Dialog.Body>
+                            <Dialog.Footer>
+                                {/* <Button onClick={onClickUpdate}>登録</PrimaryButton> */}
+                                <Button type="submit" >{record ? '更新' : '登録'}</Button>
+                                <Button type="button" onClick={handleClose}>キャンセル</Button>
+                            </Dialog.Footer>
+                        </form>
                         <Dialog.CloseTrigger asChild>
                             <CloseButton size="sm" />
                         </Dialog.CloseTrigger>

@@ -19,10 +19,10 @@ export const StudyTableRow = (props: Props) => {
       <Table.Cell>{record.time}時間</Table.Cell>
       <Table.Cell textAlign="center">
         <Button size="xs" colorPalette="cyan" onClick={() => onClickEdit(record)} >
-          <FaRegEdit />
+          編集<FaRegEdit />
         </Button>
         <Button size="xs" colorPalette="red" onClick={() => { deleteRecord(record.id) }}>
-          <MdDelete />
+          削除<MdDelete />
         </Button>
       </Table.Cell>
     </Table.Row>

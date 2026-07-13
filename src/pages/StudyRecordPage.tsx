@@ -66,6 +66,7 @@ export const StudyRecordPage = () => {
     setOpen(true)
   }
 
+
   // データの編集押下時のデータ移送
   const handleEdit = (record: StudyRecord) => {
     setSelectedRecord(record);
