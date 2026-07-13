@@ -42,8 +42,6 @@ export const StudyDialog = ({ open, onClose, onClickInsert, record, onClickUpdat
     }
 
     useEffect(() => {
-        console.log("格納されているかの確認")
-        console.log(record)
         if (record) {
             reset({
                 title: record.title,
